@@ -1,0 +1,43 @@
+<html ng-app="fooSiesta">
+	<head>
+		<title>foo_siesta</title>		
+		
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.10/angular.min.js"></script>		
+		<script type="text/javascript">
+			angular
+				.module('fooSiesta', [])
+				.factory('playControlService', function ($http) {
+					return function(action) {
+						$http({ method: 'POST', url: '/foo/control/'+action });
+					};
+				})
+				.controller('PlayControl', function ($scope) {
+				    $scope.controls = [
+			            { name: 'Prev', action: 'prev' },
+			            { name: 'Play', action: 'play' },
+			            { name: 'Pause', action: 'pause' },
+			            { name: 'Stop', action: 'stop' },
+			            { name: 'Next', action: 'next' },
+			            { name: 'Random', action: 'rand' }
+				    ];
+			    })
+				.directive('alxControlButton', function (playControlService) {
+					return { 
+						scope: { action: "=action" },
+						link: function( scope, element, attrs ) {
+							element.bind("click", function () { 
+								playControlService(scope.action);
+							});
+						}
+					};
+				});			
+		</script>
+	</head>
+
+	<body>	
+		<div ng-controller="PlayControl">
+			<button alx-control-button ng-repeat="control in controls" action="control.action" style="margin-right:3px">{{ control.name }}</button>			
+		</div>		
+	</body>
+
+</html>
